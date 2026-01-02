@@ -327,10 +327,16 @@ impl Digest {
     //hash size is dynamic changed so we returned it's updated size
     pub fn do_final(&self, chunk: &[u8], hash: &mut [u8]) -> Result<usize> {
         let mut hash_size: usize = hash.len();
+        // Use NULL pointer for empty chunk instead of a pointer to an empty slice
+        let chunk_ptr = if chunk.is_empty() {
+            core::ptr::null()
+        } else {
+            chunk.as_ptr() as _
+        };
         match unsafe {
             raw::TEE_DigestDoFinal(
                 self.handle(),
-                chunk.as_ptr() as _,
+                chunk_ptr,
                 chunk.len(),
                 hash.as_mut_ptr() as _,
                 &mut hash_size,
@@ -648,10 +654,16 @@ impl Cipher {
     /// 4) If the Implementation detects any other error.
     pub fn do_final(&self, src: &[u8], dest: &mut [u8]) -> Result<usize> {
         let mut dest_size: usize = dest.len();
+        // Use NULL pointer for empty src instead of a pointer to an empty slice
+        let src_ptr = if src.is_empty() {
+            core::ptr::null()
+        } else {
+            src.as_ptr() as _
+        };
         match unsafe {
             raw::TEE_CipherDoFinal(
                 self.handle(),
-                src.as_ptr() as _,
+                src_ptr,
                 src.len(),
                 dest.as_mut_ptr() as _,
                 &mut dest_size,
@@ -869,10 +881,16 @@ impl Mac {
     /// 5) If the Implementation detects any other error.
     pub fn compute_final(&self, message: &[u8], mac: &mut [u8]) -> Result<usize> {
         let mut mac_size: usize = mac.len();
+        // Use NULL pointer for empty messages instead of a pointer to an empty slice
+        let message_ptr = if message.is_empty() {
+            core::ptr::null()
+        } else {
+            message.as_ptr() as _
+        };
         match unsafe {
             raw::TEE_MACComputeFinal(
                 self.handle(),
-                message.as_ptr() as _,
+                message_ptr,
                 message.len(),
                 mac.as_mut_ptr() as _,
                 &mut mac_size,
@@ -904,10 +922,16 @@ impl Mac {
     /// 4) Hardware or cryptographic algorithm failure.
     /// 5) If the Implementation detects any other error.
     pub fn compare_final(&self, message: &[u8], mac: &[u8]) -> Result<()> {
+        // Use NULL pointer for empty messages instead of a pointer to an empty slice
+        let message_ptr = if message.is_empty() {
+            core::ptr::null()
+        } else {
+            message.as_ptr() as _
+        };
         match unsafe {
             raw::TEE_MACCompareFinal(
                 self.handle(),
-                message.as_ptr() as _,
+                message_ptr,
                 message.len(),
                 mac.as_ptr() as _,
                 mac.len(),
@@ -1144,10 +1168,16 @@ impl AE {
     ) -> Result<(usize, usize)> {
         let mut dest_size: usize = dest.len();
         let mut tag_size: usize = tag.len();
+        // Use NULL pointer for empty src instead of a pointer to an empty slice
+        let src_ptr = if src.is_empty() {
+            core::ptr::null()
+        } else {
+            src.as_ptr() as _
+        };
         match unsafe {
             raw::TEE_AEEncryptFinal(
                 self.handle(),
-                src.as_ptr() as _,
+                src_ptr,
                 src.len(),
                 dest.as_mut_ptr() as _,
                 &mut dest_size,
@@ -1187,10 +1217,16 @@ impl AE {
     /// 5) If the Implementation detects any other error.
     pub fn decrypt_final(&self, src: &[u8], dest: &mut [u8], tag: &[u8]) -> Result<usize> {
         let mut dest_size: usize = dest.len();
+        // Use NULL pointer for empty src instead of a pointer to an empty slice
+        let src_ptr = if src.is_empty() {
+            core::ptr::null()
+        } else {
+            src.as_ptr() as _
+        };
         match unsafe {
             raw::TEE_AEDecryptFinal(
                 self.handle(),
-                src.as_ptr() as _,
+                src_ptr,
                 src.len(),
                 dest.as_mut_ptr() as _,
                 &mut dest_size,
