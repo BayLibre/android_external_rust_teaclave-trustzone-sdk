@@ -26,7 +26,6 @@ edition = "2018"
 links = "utee"
 
 [dependencies]
-libc = "0.2"
 
 [features]
 default = []

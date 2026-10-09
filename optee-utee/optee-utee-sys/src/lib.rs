@@ -44,16 +44,10 @@ mod utee_syscalls;
 mod utee_types;
 mod tee_ipsocket;
 
-// Currently, the libc crate does not support optee_os, and patching it in
-// Xargo.toml within the TA project does not affect optee-utee-sys. Therefore,
-// we need to define the type directly in the crate to ensure compatibility.
-#[cfg(feature = "std")]
+// The libc crate does not support optee_os, and does not provide C types for
+// bare-metal targets such as aarch64-unknown-none. Therefore, we define the
+// types directly in the crate. These match both the arm and aarch64 ABIs.
 mod libc_compat {
     pub type size_t = usize;
     pub type intmax_t = i64;
-}
-
-#[cfg(not(feature = "std"))]
-mod libc_compat {
-    pub use libc::{size_t, intmax_t};
 }
