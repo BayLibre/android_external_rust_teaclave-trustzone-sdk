@@ -42,12 +42,15 @@ impl From<Whence> for raw::TEE_Whence {
 #[repr(u32)]
 pub enum ObjectStorageConstants {
     Private = 0x00000001,
+    PrivateRee = 0x80000000,
+    PrivateRpmb = 0x80000100,
     IllegalValue = 0x7FFFFFFF,
 }
 
 bitflags! {
     /// A set of flags that controls the access rights and sharing permissions
     /// with which the object handle is opened.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct DataFlag: u32 {
         /// The object is opened with the read access right. This allows the
         /// Trusted Application to call the function `TEE_ReadObjectData`.
@@ -78,6 +81,7 @@ bitflags! {
 
 bitflags! {
     /// A set of flags that defines usages of data in TEE secure storage.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct UsageFlag: u32 {
         /// The object [Attribute](Attribute) can be extracted.
         const EXTRACTABLE = 0x00000001;
@@ -107,6 +111,7 @@ pub enum MiscellaneousConstants {
 
 bitflags! {
     /// A set of flags that defines Handle features.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct HandleFlag: u32{
         /// Set for a [PersistentObject](crate::PersistentObject).
         const PERSISTENT = 0x00010000;
